@@ -1,49 +1,60 @@
-from geometry import Face, Vertex
+from geometry import Face, Model, Shape, Vertex
 import math
 import numpy
 
 radius = 5
 height = 15
-resolution = 10
+resolution = 100
 
 verticesTopCircle = []
 verticesBottomCircle = []
 
 # Create the vertices for the top and bottom circles of the cylinder
-for x in numpy.linspace(-radius, radius, (resolution + 2) / 2):
-	z = math.sqrt(radius**2 - x**2)
+for degrees in numpy.linspace(0, 360, resolution):
+    z = math.sin(degrees * math.pi / 180) * radius
+    x = math.cos(degrees * math.pi / 180) * radius
 
-	vertexTopCircle = Vertex(x, height, z)
-	verticesTopCircle.append(vertexTopCircle)
+    vertexTopCircle = Vertex(x, height, z)
+    verticesTopCircle.append(vertexTopCircle)
 
-	vertexBottomCircle = Vertex(x, 0, z)
-	verticesBottomCircle.append(vertexBottomCircle)
+    vertexBottomCircle = Vertex(x, 0, z)
+    verticesBottomCircle.append(vertexBottomCircle)
 
-	if z != 0:
-		vertexTopCircle = Vertex(x, height, -z)
-		verticesTopCircle.append(vertexTopCircle)
-		
-		vertexBottomCircle = Vertex(x, 0, -z)
-		verticesBottomCircle.append(vertexBottomCircle)
+    if z != 0:
+        vertexTopCircle = Vertex(x, height, -z)
+        verticesTopCircle.append(vertexTopCircle)
+        
+        vertexBottomCircle = Vertex(x, 0, -z)
+        verticesBottomCircle.append(vertexBottomCircle)
 
-faceTopCircle = Face(verticesTopCircle)
-faceBottomCircle = Face(verticesBottomCircle)
+facesTopCircle = [Face(verticesTopCircle)]
+facesBottomCircle = [Face(verticesBottomCircle)]
 
-# Create the OBJ file
-fileObject = open('test.obj', 'w')
+shapeTopCircle = Shape('Top Circle', verticesTopCircle, facesTopCircle)
+shapeBottomCircle = Shape('Bottom Circle', verticesBottomCircle, facesBottomCircle)
 
-fileObject.write('# Top Cicle Vertices\n')
-for vertex in verticesTopCircle:
-	fileObject.write(vertex.toString() + '\n')
-	
-fileObject.write('\n# Bottom Cicle Vertices\n')
-for vertex in verticesBottomCircle:
-	fileObject.write(vertex.toString() + '\n')
+model = Model('3D  Model', [shapeTopCircle, shapeBottomCircle])
 
-fileObject.write('\n# Top Circle Face\n')
-fileObject.write(faceTopCircle.toString() + '\n')
+model.create()
 
-fileObject.write('\n# Bottom Circle Face\n')
-fileObject.write(faceBottomCircle.toString() + '\n')
 
-fileObject.close()
+def placeNote(degrees):
+    noteHeight = 1
+    noteWidth = 1
+
+    note = Shape("Note")
+
+
+    z1 = math.sin(degrees * math.pi / 180) * radius
+    x1 = math.cos(degrees * math.pi / 180) * radius
+    vertex1 = Vertex(x1, 0, z1)
+
+    degrees2 = degrees - math.asin((noteWidth / 2.0) / radius)
+    z2 = math.sin(degrees2) * radius
+    x2 = math.cos(degrees2) * radius
+    vertex1 = Vertex(x2, 0, z2)
+
+    
+
+placeNote(0)
+
