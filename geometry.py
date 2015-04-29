@@ -8,8 +8,8 @@ class Vertex:
         self.x = x
         self.y = y
         self.z = z
-        
-        self.id = self._ID 
+
+        self.id = self._ID
         self.__class__._ID += 1
 
 class Face:
@@ -37,15 +37,18 @@ class Model:
         # Create the OBJ file
         objString = ''
         currentVertexIndex = 1
+        vertexIndex = {}
 
         for shape in self.shapes:
-            vertexIndex = {}
-
             objString += '# %s\n' % (shape.name)
 
             for vertex in shape.vertices:
+                # Only print a vertex once
+                if vertex.id in vertexIndex:
+                   continue
+
                 vertexIndex[vertex.id] = currentVertexIndex
-                currentVertexIndex += 1 
+                currentVertexIndex += 1
                 objString += 'v %s %s %s\n' % (vertex.x, vertex.y, vertex.z)
 
             for face in shape.faces:
@@ -87,10 +90,6 @@ class Circle(Shape):
             vertex = Vertex(x, self.centerY, z)
             vertices.append(vertex)
 
-            if z != 0:
-                vertex = Vertex(x, self.centerY, -z)
-                vertices.append(vertex)
-                
         # Create the face
         faces = [Face(vertices)]
 
@@ -112,4 +111,26 @@ class Cylinder():
             topCircle = Circle(0, 0, 0, self.radius)
             bottomCircle = Circle(0, self.height, 0, self.radius)
 
-            self.shapes = [topCircle.shape, bottomCircle.shape]
+            topCircleVertices = topCircle.shape.vertices
+            bottomCircleVertices = bottomCircle.shape.vertices
+
+            vertices = zip(topCircleVertices, bottomCircleVertices)
+            skinFaces = []
+
+            # Create the 'skin' of the cylinder
+            for index, value in enumerate(vertices):
+                nextIndex = (index + 1) % len(vertices)
+
+                sliverVertices = [
+                    vertices[index][0],
+                    vertices[index][1],
+                    vertices[nextIndex][1],
+                    vertices[nextIndex][0]
+                ]
+
+                face = Face(sliverVertices)
+                skinFaces.append(face)
+
+            skin = Shape('Cylinder Skin', topCircleVertices + bottomCircleVertices, skinFaces)
+
+            self.shapes = [topCircle.shape, bottomCircle.shape, skin]
