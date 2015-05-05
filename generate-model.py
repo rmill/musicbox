@@ -3,8 +3,8 @@ from mido import MidiFile
 import sys
 import note
 
-radius = 5
-height = 15
+radius = 50
+height = 200
 
 try:
     midiFileName = sys.argv[1]
@@ -14,7 +14,7 @@ except:
 
 cylinder = Cylinder(0, 0, 0, radius, height)
 
-notes = note.getNotes(midiFileName)
+notes = note.getNotes(midiFileName, cylinder)
 
 model = Model('3D  Model', cylinder.shapes + notes)
 
