@@ -12,30 +12,25 @@ def getNotes(midiFileName, cylinder):
 
     midifile = MidiFile(midiFileName)
 
-    tempo = DEFAULT_TEMPO
-
-    numberOfBeats = (midifile.length * 1000) / tempo
-    numberOfTicks = numberOfBeats * midifile.ticks_per_beat
-    degreesPerTick = 360 / numberOfTicks
-
-    # Our current spot in the spool in degrees
+    # Our current spot on the cylinder in degrees
     cursor = 0
-
-    print "Degrees per tick: %s" % (degreesPerTick)
+    length = midifile.length
+    degreesSecond = 360 / length
 
     for message in midifile:
         print message
 
         if 'time' in dir(message):
-            cursor += message.time * degreesPerTick
+            if isinstance(message, MetaMessage):
+                length -= message.time
+                degreesSecond = 360 / length
+            else:
+                cursor -= message.time * degreesSecond
 
         if 'type' not in dir(message):
             continue
 
-        if message.type == 'set_tempo':
-            tempo = message.tempo
-
-        if message.type == 'note_on':
+        if message.type == 'note_on' and message.velocity > 0:
             note = createNote(cursor, message.note, cylinder)
             notes.append(note)
 
