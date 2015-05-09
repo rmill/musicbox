@@ -15,17 +15,20 @@ def getNotes(midiFileName, cylinder):
     # Our current spot on the cylinder in degrees
     cursor = 0
     length = midifile.length
-    degreesSecond = 360 / length
+    degreesPerSecond = 360 / length
 
+    # Create the note objects from the midi file
     for message in midifile:
         print message
 
         if 'time' in dir(message):
             if isinstance(message, MetaMessage):
+                # MetaMessages distort the length of the song
                 length -= message.time
-                degreesSecond = 360 / length
+                degreesPerSecond = 360 / length
             else:
-                cursor -= message.time * degreesSecond
+                # Progress the cursor
+                cursor -= message.time * degreesPerSecond
 
         if 'type' not in dir(message):
             continue

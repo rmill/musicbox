@@ -33,7 +33,7 @@ class Model:
         self.name = name
         self.shapes = shapes
 
-    def create(self):
+    def create(self, fileName):
         # Create the OBJ file
         objString = ''
         currentVertexIndex = 1
@@ -61,7 +61,7 @@ class Model:
 
             objString += '\n'
 
-        fileObject = open('test.obj', 'w')
+        fileObject = open(fileName, 'w')
         fileObject.write(objString)
         fileObject.close()
 
