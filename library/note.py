@@ -19,8 +19,6 @@ def getNotes(midiFileName, cylinder):
 
     # Create the note objects from the midi file
     for message in midifile:
-        print message
-
         if 'time' in dir(message):
             if isinstance(message, MetaMessage):
                 # MetaMessages distort the length of the song
