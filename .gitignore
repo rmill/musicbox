@@ -3,3 +3,4 @@
 *.obj
 download-*
 upload-*
+public/*
