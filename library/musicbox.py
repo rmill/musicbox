@@ -1,4 +1,4 @@
-from geometry import Cylinder, Model
+from geometry import MusicBoxCylinder, Cylinder, Model
 from mido import MidiFile
 import note
 
@@ -6,7 +6,7 @@ radius = 50
 height = 200
 
 def createModel(midiFileName):
-    cylinder = Cylinder(0, 0, 0, radius, height)
+    cylinder = MusicBoxCylinder(0, 0, 0, radius, height)
 
     notes = note.getNotes(midiFileName, cylinder)
 
